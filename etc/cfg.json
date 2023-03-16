@@ -1,0 +1,14 @@
+{
+    "database": {
+        "server": "192.168.1.212",
+        "port": "1521",
+        "sid": "ZDBT01L",
+        "user": "reporter",
+        "pass": "cmVwb3J0ZXI="
+    },
+    "file": {
+        "input": "../dat/in/pstmt.sql",
+        "output": "../dat/out/stdnt_out_file.csv"
+    }
+
+}
