@@ -8,7 +8,9 @@
     },
     "file": {
         "input": "../dat/in/pstmt.sql",
-        "output": "../dat/out/stdnt_out_file.csv"
+        "output": "../dat/out/stdnt_out_file.csv",
+        "aes": "./AES.key",
+        "pass": "./Pass.txt"
     }
 
 }
