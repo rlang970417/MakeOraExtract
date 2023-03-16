@@ -41,6 +41,51 @@ function Get-Cfg
 	return Get-Content -Path $cfgFile -Raw | ConvertFrom-Json
 }
 
+function Get-KeyFile
+{
+    param
+    (
+        [Parameter (Mandatory = $true)] [String]$KeyFile
+    )
+
+    # Verify our configuration files exists
+    if (!(Test-Path $KeyFile))
+    {
+        Write-Host "File missing : $KeyFile . "
+        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        exit
+    }
+
+        return Get-Content $KeyFile
+}
+
+function Get-PassFile
+{
+    param
+    (
+        [Parameter (Mandatory = $true)] [String]$KeyFile,
+        [Parameter (Mandatory = $true)] [String]$PassFile
+    )
+
+    # Verify our configuration files exists
+    if (!(Test-Path $KeyFile))
+    {
+        Write-Host "File missing : $KeyFile ."
+        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        exit
+    }
+
+    if (!(Test-Path $PassFile))
+    {
+        Write-Host "File missing : $PassFile . "
+        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        exit
+    }
+
+    $readKey = Get-KeyFile $KeyFile
+    $readSecStr = Get-Content $PassFile | ConvertTo-SecureString -Key $readKey
+    return ConvertFrom-SecureString -SecureString $readSecStr -AsPlainText
+}
 # Define our script variables from our JSON configuration file
 function Get-Conn
 {   
@@ -49,8 +94,8 @@ function Get-Conn
         [Parameter (Mandatory = $true)] [String]$Server,
 	    [Parameter (Mandatory = $true)] [String]$Port,
 	    [Parameter (Mandatory = $true)] [String]$Service,
-		[Parameter (Mandatory = $true)] [String]$DBuser,
-		[Parameter (Mandatory = $true)] [String]$DBpass
+	    [Parameter (Mandatory = $true)] [String]$DBuser,
+	    [Parameter (Mandatory = $true)] [String]$DBpass
     )
     $datasource = " (DESCRIPTION =
                      (ADDRESS =
@@ -106,17 +151,18 @@ function Make-Extract
 
 function Main
 {
-	# Perform system check
+    # Perform system check
     Check-PSVersion
     
-	# Define and init our variable arguments
+    # Define and init our variable arguments
     $jsonCfg = Get-Cfg
 	
-	$dbPass = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($jsonCfg.database.pass))
+    #$dbPass = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($jsonCfg.database.pass))
+    $dbPass = Get-PassFile $jsonCfg.file.aes $jsonCfg.file.pass
     $myConn = Get-Conn $jsonCfg.database.server $jsonCfg.database.port $jsonCfg.database.sid $jsonCfg.database.user $dbPass
     $queryStatment = [IO.File]::ReadAllText($sqlFile) #Be careful not to terminate it with a semicolon, it doesn't like it
 	
-	# Extract our data from Oracle
+    # Extract our data from Oracle
     Make-Extract $myConn $queryStatment $jsonCfg.file.output
 }
 
