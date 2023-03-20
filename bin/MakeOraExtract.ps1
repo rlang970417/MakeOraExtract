@@ -51,8 +51,7 @@ function Get-KeyFile
     # Verify our configuration files exists
     if (!(Test-Path $KeyFile))
     {
-        Write-Host "File missing : $KeyFile . "
-        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        Write-Host "File missing : $KeyFile . Goota go!"
         exit
     }
 
@@ -70,15 +69,13 @@ function Get-PassFile
     # Verify our configuration files exists
     if (!(Test-Path $KeyFile))
     {
-        Write-Host "File missing : $KeyFile ."
-        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        Write-Host "File missing : $KeyFile . Goota go!"
         exit
     }
 
     if (!(Test-Path $PassFile))
     {
-        Write-Host "File missing : $PassFile . "
-        Write-Host "Please generate one with : $ROOT_DIR/lib/MakeAESFiles.psm1 ."
+        Write-Host "File missing : $PassFile . Goota go!"
         exit
     }
 
@@ -92,10 +89,10 @@ function Get-Conn
     param
     (
         [Parameter (Mandatory = $true)] [String]$Server,
-	    [Parameter (Mandatory = $true)] [String]$Port,
-	    [Parameter (Mandatory = $true)] [String]$Service,
-	    [Parameter (Mandatory = $true)] [String]$DBuser,
-	    [Parameter (Mandatory = $true)] [String]$DBpass
+	[Parameter (Mandatory = $true)] [String]$Port,
+	[Parameter (Mandatory = $true)] [String]$Service,
+	[Parameter (Mandatory = $true)] [String]$DBuser,
+	[Parameter (Mandatory = $true)] [String]$DBpass
     )
     $datasource = " (DESCRIPTION =
                      (ADDRESS =
